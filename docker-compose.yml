@@ -8,9 +8,7 @@ services:
       POSTGRES_PASSWORD: "sushkova_204"
       PGDATA: "/var/lib/postgresql/data/pgdata"
     volumes:
-      - ./docker/db/scripts:/library.sql:/docker-entrypoint-initdb.d/library.sql
-      - ./docker/db/scripts:/trains.sql:/docker-entrypoint-initdb.d/trains.sql
-      - ./docker/db/scripts:/hospital.sql:/docker-entrypoint-initdb.d/hospital.sql
+      - ./docker/db/scripts:/docker-entrypoint-initdb.d/
       - ./docker/db/data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
