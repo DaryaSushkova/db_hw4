@@ -1,16 +1,35 @@
 version: "3.9"
-volumes:
-  postgres_data:
+
 services:
-  postgres:
+  library:
     image: postgres:14.5
     environment:
-      POSTGRES_DB: sushkova_204
-      POSTGRES_USER: sushkova_204
-      POSTGRES_PASSWORD: sushkova_204
-      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_DB: "SUSHKOVA_204"
+      POSTGRES_USER: "SUSHKOVA_204"
+      POSTGRES_PASSWORD: "SUSHKOVA_204"
     volumes:
-      - ./docker/db/scripts:/docker-entrypoint-initdb.d/
-      - postgres_data:/var/lib/postgresql/data
+      - ./docker/db/scripts/library.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
-      - "5432:5432"
+      - "5430:5432"
+
+  trains:
+    image: postgres:14.5
+    environment:
+      POSTGRES_DB: "SUSHKOVA_204"
+      POSTGRES_USER: "SUSHKOVA_204"
+      POSTGRES_PASSWORD: "SUSHKOVA_204"
+    volumes:
+      - ./docker/db/scripts/trains.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5431:5432"
+
+  hospital:
+    image: postgres:14.5
+    environment:
+      POSTGRES_DB: "SUSHKOVA_204"
+      POSTGRES_USER: "SUSHKOVA_204"
+      POSTGRES_PASSWORD: "SUSHKOVA_204"
+    volumes:
+      - ./docker/db/scripts/hospital.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5433:5432"

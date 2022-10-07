@@ -1,128 +1,87 @@
-CREATE DATABASE hospital;
-GRANT ALL PRIVILEGES ON DATABASE hospital TO sushkova_204;
-\connect hospital
-
-CREATE TABLE "public.StationPersonell" (
-	"PersNr" serial(1000) NOT NULL,
-	"Name" varchar(15) NOT NULL,
-	CONSTRAINT "StationPersonell_pk" PRIMARY KEY ("PersNr")
-) WITH (
-  OIDS=FALSE
+CREATE TABLE "StationPersonell" (
+  "PersNr" int PRIMARY KEY,
+  "Name" varchar
 );
 
 
 
-CREATE TABLE "public.Caregiver" (
-	"PersNr" serial(1000) NOT NULL,
-	"Qualification" varchar(20) NOT NULL,
-	CONSTRAINT "Caregiver_pk" PRIMARY KEY ("PersNr")
-) WITH (
-  OIDS=FALSE
+CREATE TABLE "Caregiver" (
+  "PersNr" int PRIMARY KEY,
+  "Qualification" varchar
 );
 
 
 
-CREATE TABLE "public.Doctor" (
-	"PersNr" serial(1000) NOT NULL,
-	"Area" varchar(20) NOT NULL,
-	"Rank" varchar(20) NOT NULL,
-	CONSTRAINT "Doctor_pk" PRIMARY KEY ("PersNr")
-) WITH (
-  OIDS=FALSE
+CREATE TABLE "Doctor" (
+  "PersNr" int PRIMARY KEY,
+  "Rank" int
 );
 
 
 
-CREATE TABLE "public.Patient" (
-	"PatientNr" serial(1000) NOT NULL,
-	"Name" varchar(15) NOT NULL,
-	"Disease" varchar(15) NOT NULL,
-	CONSTRAINT "Patient_pk" PRIMARY KEY ("PatientNr")
-) WITH (
-  OIDS=FALSE
+CREATE TABLE "Patient" (
+  "PatientNr" int PRIMARY KEY,
+  "Name" varchar,
+  "Disease" varchar
 );
 
 
 
-CREATE TABLE "public.Treats" (
-	"PatientNr" serial(1000) NOT NULL,
-	"DoctorNr" serial(1000) NOT NULL,
-	CONSTRAINT "Treats_pk" PRIMARY KEY ("PatientNr")
-) WITH (
-  OIDS=FALSE
+CREATE TABLE "Treats" (
+  "PersNr" int,
+  "PatientNr" int
 );
 
 
 
-CREATE TABLE "public.Station" (
-	"StatNr" serial(1000) NOT NULL,
-	"Name" varchar(15) NOT NULL,
-	CONSTRAINT "Station_pk" PRIMARY KEY ("StatNr")
-) WITH (
-  OIDS=FALSE
+CREATE TABLE "Station" (
+  "StatNr" int PRIMARY KEY,
+  "Name" varchar
 );
 
 
 
-CREATE TABLE "public.Room" (
-	"StatNr" serial(1000) NOT NULL,
-	"RoomNr" serial(1000) NOT NULL,
-	"Beds" int(6) NOT NULL,
-	CONSTRAINT "Room_pk" PRIMARY KEY ("StatNr","RoomNr")
-) WITH (
-  OIDS=FALSE
+CREATE TABLE "Room" (
+  "RoomNr" int PRIMARY KEY,
+  "Beds" int
 );
 
 
 
-CREATE TABLE "public.Works_for" (
-	"PersNr" serial(1000) NOT NULL,
-	"StatNr" serial(1000) NOT NULL,
-	CONSTRAINT "Works_for_pk" PRIMARY KEY ("PersNr")
-) WITH (
-  OIDS=FALSE
+CREATE TABLE "Work_for" (
+  "StatNr" int,
+  "PersNr" int
 );
 
 
 
-CREATE TABLE "public.Admission" (
-	"PatientNr" serial(1000) NOT NULL,
-	"StatNr" serial(1000) NOT NULL,
-	"RoomNr" serial(1000) NOT NULL,
-	"from" DATE NOT NULL,
-	"to" DATE NOT NULL,
-	CONSTRAINT "Admission_pk" PRIMARY KEY ("PatientNr")
-) WITH (
-  OIDS=FALSE
+CREATE TABLE "Room_in_Stat" (
+  "StatNr" int,
+  "RoomNr" int
 );
 
 
 
-
-ALTER TABLE "Caregiver" ADD CONSTRAINT "Caregiver_fk0" FOREIGN KEY ("PersNr") REFERENCES "StationPersonell"("PersNr");
-
-ALTER TABLE "Doctor" ADD CONSTRAINT "Doctor_fk0" FOREIGN KEY ("PersNr") REFERENCES "StationPersonell"("PersNr");
-
-
-ALTER TABLE "Treats" ADD CONSTRAINT "Treats_fk0" FOREIGN KEY ("PatientNr") REFERENCES "Patient"("PatientNr");
-ALTER TABLE "Treats" ADD CONSTRAINT "Treats_fk1" FOREIGN KEY ("DoctorNr") REFERENCES "Doctor"("PersNr");
-
-
-ALTER TABLE "Room" ADD CONSTRAINT "Room_fk0" FOREIGN KEY ("StatNr") REFERENCES "Station"("StatNr");
-
-ALTER TABLE "Works_for" ADD CONSTRAINT "Works_for_fk0" FOREIGN KEY ("PersNr") REFERENCES "StationPersonell"("PersNr");
-ALTER TABLE "Works_for" ADD CONSTRAINT "Works_for_fk1" FOREIGN KEY ("StatNr") REFERENCES "Station"("StatNr");
-
-ALTER TABLE "Admission" ADD CONSTRAINT "Admission_fk0" FOREIGN KEY ("PatientNr") REFERENCES "Patient"("PatientNr");
-ALTER TABLE "Admission" ADD CONSTRAINT "Admission_fk1" FOREIGN KEY ("StatNr") REFERENCES "Room"("StatNr");
-ALTER TABLE "Admission" ADD CONSTRAINT "Admission_fk2" FOREIGN KEY ("RoomNr") REFERENCES "Room"("RoomNr");
+CREATE TABLE "Admission" (
+  "RoomNr" int,
+  "PatientNr" int,
+  "from" DATE,
+  "to" DATE
+);
 
 
 
+ALTER TABLE "Caregiver" ADD FOREIGN KEY ("PersNr") REFERENCES "StationPersonell" ("PersNr");
+ALTER TABLE "Doctor" ADD FOREIGN KEY ("PersNr") REFERENCES "StationPersonell" ("PersNr");
 
+ALTER TABLE "Work_for" ADD FOREIGN KEY ("StatNr") REFERENCES "Station" ("StatNr");
+ALTER TABLE "Work_for" ADD FOREIGN KEY ("PersNr") REFERENCES "StationPersonell" ("PersNr");
 
+ALTER TABLE "Treats" ADD FOREIGN KEY ("PersNr") REFERENCES "Doctor" ("PersNr");
+ALTER TABLE "Treats" ADD FOREIGN KEY ("PatientNr") REFERENCES "Patient" ("PatientNr");
 
+ALTER TABLE "Room_in_Stat" ADD FOREIGN KEY ("StatNr") REFERENCES "Station" ("StatNr");
+ALTER TABLE "Room_in_Stat" ADD FOREIGN KEY ("RoomNr") REFERENCES "Room" ("RoomNr");
 
-
-
-
+ALTER TABLE "Admission" ADD FOREIGN KEY ("RoomNr") REFERENCES "Room" ("RoomNr");
+ALTER TABLE "Admission" ADD FOREIGN KEY ("PatientNr") REFERENCES "Patient" ("PatientNr");
